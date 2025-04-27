@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset='utf-8'>
+    <title>сайт комарова</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover'>
+    <meta name="theme-color" content="#222">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="icon" type="image/x-icon" href="/assets/Lovedol.ico">
+    <link rel="preload" href="./fonts/Roboto-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="./assets/profile_picture.jpg" as="image">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+</head>
+
+<body>
+    <div class="background">
+        <video src="./assets/bg3.mp4" alt="Background Video" autoplay loop muted class="background_video"></video>
+    </div>
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <header>
+            <div class="profile-image-container">
+                <img src="./assets/profile_picture.jpg" alt="komaru" class="profile-image">
+                <div id="jester-hat-container" class="jester-hat"></div>
+                <div class="glowing-border"></div>
+            </div>
+            <h1>Комаров</h1>
+            <p class="bio">Я Комару, мне нечего написать</p>
+        </header>
+
+        <nav>
+            <a href="https://t.me/oewue" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+            <a href="https://t.me/praiskomarova" target="_blank"><i class="fab fa-telegram"></i> Прайс</a>
+            <a href="https://t.me/komarovbi0" target="_blank"><i class="fab fa-telegram"></i> Биография</a>
+
+        </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const projectList = document.getElementById('project-list');
+            const toggleProjectsButton = document.getElementById('toggle-projects');
+            const icon = toggleProjectsButton.querySelector('i');
+
+            toggleProjectsButton.addEventListener('click', () => {
+                projectList.classList.toggle('show');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+                toggleProjectsButton.textContent = projectList.classList.contains('show') ? 'Hide Projects' :
+                    'View Projects';
+            });
+
+            async function loadTGS(filePath) {
+                const response = await fetch(filePath);
+                const buffer = await response.arrayBuffer();
+                const inflated = pako.inflate(new Uint8Array(buffer), {
+                    to: 'string'
+                });
+                return JSON.parse(inflated);
+            }
+
+            async function playAnimation(animationData) {
+                try {
+                    lottie.loadAnimation({
+                        container: document.getElementById('jester-hat-container'),
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: animationData
+                    });
+                } catch (error) {
+                    console.error('Error loading animation:', error);
+                }
+            }
+
+            async function loadAndPlayAnimation() {
+                try {
+                    const animationData = await loadTGS('./assets/sticker.tgs');
+                    playAnimation(animationData);
+                } catch (error) {
+                    console.error('Error loading animation:', error);
+                }
+            }
+            loadAndPlayAnimation();
+
+            window.onload = function() {
+                particlesJS.load('particles-js', 'particles.json', function() {
+                    console.log('callback - particles.js config loaded');
+                });
+            };
+        });
+    </script>
+</body>
+
+</html>
